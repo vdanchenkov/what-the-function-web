@@ -1,0 +1,20 @@
+.header {
+  color: hsl(10, 50%, 50%);
+}
+
+.queryContainer {
+  display: flex;
+}
+
+.args, .result {
+  border: 1px solid black;
+  flex-grow: 1;
+}
+
+.args {
+  margin-right: 5px;
+}
+
+.result {
+  margin-left: 5px;
+}

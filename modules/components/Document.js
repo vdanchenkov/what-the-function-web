@@ -28,6 +28,7 @@ const Document = React.createClass({
           <meta charSet="utf-8"/>
           <link rel="shortcut icon" href={favicon}/>
           <title>{title}</title>
+          <link rel="stylesheet" href="https://npmcdn.com/codemirror@5.14.2/lib/codemirror.css"/>
           {styles}
         </head>
         <body>
