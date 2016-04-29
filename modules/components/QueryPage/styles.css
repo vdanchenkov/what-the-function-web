@@ -8,7 +8,7 @@
 
 .args, .result {
   border: 1px solid black;
-  flex-grow: 1;
+  flex: 1;
 }
 
 .args {
