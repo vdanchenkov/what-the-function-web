@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './styles.css'
 import Codemirror from 'react-codemirror'
+import babel from 'babel-core'
 
 export default React.createClass({
   componentDidMount() {
