@@ -13,8 +13,8 @@ export const ClientConfig = merge({}, config.ClientConfig, {
     ]
   },
   entry: {
-    _vendor: ['lodash', 'babel-core', 'react-codemirror']
+    _vendor: [ 'lodash', 'babel-core', 'react-codemirror' ]
   }
-});
+})
 
 export const ServerConfig = config.ServerConfig

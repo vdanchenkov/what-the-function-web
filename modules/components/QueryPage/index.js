@@ -10,10 +10,10 @@ export default React.createClass({
   getInitialState: () => ({
     args: '[1, 2, 3]',
     result: '3',
-    suggestions: [1,2,3]
+    suggestions: [ 1,2,3 ]
   }),
   updateResults() {
-    this.setState({suggestions: [`f(${this.state.args}) == ${this.state.result}`]})
+    this.setState({ suggestions: [ `f(${this.state.args}) == ${this.state.result}` ] })
   },
   onResultChange: function (result) {
     this.setState({ result })
@@ -36,7 +36,7 @@ export default React.createClass({
   }
 })
 
-export const QueryPageView = ({args, result, onResultChange, onArgumentsChange, suggestions}) => {
+export const QueryPageView = ({ args, result, onResultChange, onArgumentsChange, suggestions }) => {
   return (
       <div>
         <div className={styles.queryContainer}>
@@ -47,5 +47,5 @@ export const QueryPageView = ({args, result, onResultChange, onArgumentsChange, 
           suggestions.map(suggestion => <div>{suggestion}</div>)
         }
       </div>
-  );
+  )
 }
