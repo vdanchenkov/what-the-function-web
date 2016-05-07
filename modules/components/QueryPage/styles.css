@@ -11,6 +11,9 @@
   flex: 1;
 }
 
+.error {
+  background: #FFEEEE;
+}
 .args {
   margin-right: 5px;
 }

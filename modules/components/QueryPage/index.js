@@ -1,7 +1,8 @@
 import React from 'react'
 import styles from './styles.css'
 import Codemirror from 'react-codemirror'
-import babel from 'babel-core'
+import classnames from 'classnames'
+import { transform } from 'babel-core'
 
 export default React.createClass({
   componentDidMount() {
@@ -10,10 +11,15 @@ export default React.createClass({
   getInitialState: () => ({
     args: '[1, 2, 3]',
     result: '3',
-    suggestions: [ 1,2,3 ]
+    suggestions: [ 1, 2, 3 ]
   }),
   updateResults() {
-    this.setState({ suggestions: [ `f(${this.state.args}) == ${this.state.result}` ] })
+    try {
+      const result = transform(this.state.args)
+      this.setState({ suggestions: [ result.code ], argsError: undefined })
+    } catch (e) {
+      this.setState({ argsError: e.toString() })
+    }
   },
   onResultChange: function (result) {
     this.setState({ result })
@@ -27,6 +33,7 @@ export default React.createClass({
     return (
         <QueryPageView
             args={this.state.args}
+            argsError={this.state.argsError}
             result={this.state.result}
             onResultChange={this.onResultChange}
             onArgumentsChange={this.onArgumentsChange}
@@ -36,13 +43,19 @@ export default React.createClass({
   }
 })
 
-export const QueryPageView = ({ args, result, onResultChange, onArgumentsChange, suggestions }) => {
+export const QueryPageView = ({ args, argsError, result, onResultChange, onArgumentsChange, suggestions }) => {
   return (
       <div>
         <div className={styles.queryContainer}>
-          <Codemirror className={styles.args} value={args} onChange={onArgumentsChange}/>
+          <Codemirror
+              className={classnames(styles.args, { [ styles.error ]: argsError })}
+              value={args}
+              onChange={onArgumentsChange}
+              textAreaClassName={argsError ? styles.error : ''}
+          />
           <Codemirror className={styles.result} value={result} onChange={onResultChange}/>
         </div>
+        { argsError ? <div>Error: {argsError}</div> : null }
         {
           suggestions.map(suggestion => <div>{suggestion}</div>)
         }
