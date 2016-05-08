@@ -43,6 +43,17 @@ module.exports = {
     noParse: [
       /babylon/
     ],
+    /*
+      fix of:
+
+      WARNING in ./~/babel-core/lib/transformation/file/options/option-manager.js
+      Critical dependencies:
+      218:19-37 the request of a dependency is an expression
+      411:21-39 the request of a dependency is an expression
+      @ ./~/babel-core/lib/transformation/file/options/option-manager.js 218:19-37 411:21-39
+    */
+    exprContextRegExp: /$^/,
+    exprContextCritical: false,
     loaders: [ {
       test: /\.js$/,
       loaders: [ 'babel' ],
