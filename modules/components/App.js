@@ -7,7 +7,6 @@ export default React.createClass({
     return (
       <div>
         <Title render="What the Function"/>
-        <h1>What the Function</h1>
         <QueryPage/>
       </div>
     )

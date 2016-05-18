@@ -1,64 +1,56 @@
 import React from 'react'
 import styles from './styles.css'
-import Codemirror from 'react-codemirror'
-import classnames from 'classnames'
-import { transform } from 'babel-core'
+import Editor from '../Editor'
 
 export default React.createClass({
   componentDidMount() {
     this.updateResults()
   },
   getInitialState: () => ({
-    args: '[1, 2, 3]',
-    result: '3',
     suggestions: [ 1, 2, 3 ]
   }),
   updateResults() {
-    try {
-      const result = transform(this.state.args)
-      this.setState({ suggestions: [ result.code ], argsError: undefined })
-    } catch (e) {
-      this.setState({ argsError: e.toString() })
-    }
+    // TODO
   },
-  onResultChange: function (result) {
+  onResultChange: function ({ object: result }) {
     this.setState({ result })
     this.updateResults()
   },
-  onArgumentsChange: function (args) {
+  onArgumentsChange: function ({ object: args }) {
     this.setState({ args })
     this.updateResults()
   },
   render() {
     return (
-        <QueryPageView
-            args={this.state.args}
-            argsError={this.state.argsError}
-            result={this.state.result}
-            onResultChange={this.onResultChange}
-            onArgumentsChange={this.onArgumentsChange}
-            suggestions={this.state.suggestions}
-        />
+      <QueryPageView
+          onResultChange={this.onResultChange}
+          onArgumentsChange={this.onArgumentsChange}
+          suggestions={this.state.suggestions}
+      />
     )
   }
 })
 
-export const QueryPageView = ({ args, argsError, result, onResultChange, onArgumentsChange, suggestions }) => {
+export const QueryPageView = ({ onArgumentsChange, onResultChange, suggestions }) => {
   return (
-      <div>
+      <div className={styles.component}>
         <div className={styles.queryContainer}>
-          <Codemirror
-              className={classnames(styles.args, { [ styles.error ]: argsError })}
-              value={args}
-              onChange={onArgumentsChange}
-              textAreaClassName={argsError ? styles.error : ''}
-          />
-          <Codemirror className={styles.result} value={result} onChange={onResultChange}/>
+          <div>
+            expect(f(
+          </div>
+          <div className={styles.editor}>
+            <Editor wrap={s => `[${s}]`} onChange={onArgumentsChange}/>
+          </div>
+          <div>
+            )).to.eql(
+          </div>
+          <div className={styles.editor}>
+            <Editor onChange={onResultChange}/>
+          </div>
+          <div>
+            )
+          </div>
         </div>
-        { argsError ? <div>Error: {argsError}</div> : null }
-        {
-          suggestions.map(suggestion => <div>{suggestion}</div>)
-        }
       </div>
   )
 }

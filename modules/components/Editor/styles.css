@@ -1,0 +1,16 @@
+.component {
+}
+
+.error :global .public-DraftStyleDefault-block > * {
+  background: rgba(255, 0, 0, 0.3);
+}
+
+.component :global .public-DraftEditorPlaceholder-root {
+  opacity: 0.2;
+  position: absolute;
+  z-index: -1;
+}
+
+.component :global .public-DraftEditorPlaceholder-hasFocus {
+  display: none;
+}
