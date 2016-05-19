@@ -5,7 +5,7 @@ import QueryPage from './QueryPage'
 export default React.createClass({
   render() {
     return (
-      <div>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Title render="What the Function"/>
         <QueryPage/>
       </div>

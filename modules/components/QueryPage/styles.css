@@ -1,27 +1,14 @@
 .component {
-  display: flex;
-  justify-content: center;
-  margin-top: 100px;
-}
-
-.header {
-  color: hsl(10, 50%, 50%);
-}
-
-.queryContainer {
   font-family: Courier;
   font-size: 24px;
   min-width: 400px;
+  margin-top: 48px;
 }
 
 .editor {
   padding-left: 40px;
 }
 
-.args {
-  margin-right: 5px;
-}
-
-.result {
-  margin-left: 5px;
+.libsLabel {
+  margin-bottom: 1em;
 }
