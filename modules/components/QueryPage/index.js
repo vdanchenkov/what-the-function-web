@@ -37,17 +37,14 @@ export default React.createClass({
 export const QueryPageView = ({ onArgumentsChange, onResultChange, suggestions }) => {
   return (
       <div className={styles.component}>
-        <div className={styles.libsLabel}>
-          searchIn('lodash@4.12.0')
-        </div>
         <div>
-          expect(f(
+          modules(lodash).wtf(
         </div>
         <div className={styles.editor}>
           <Editor wrap={s => `[${s}]`} onChange={onArgumentsChange}/>
         </div>
         <div>
-          )).to.eql(
+          ).eql(
         </div>
         <div className={styles.editor}>
           <Editor onChange={onResultChange}/>
