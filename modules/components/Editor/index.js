@@ -17,7 +17,7 @@ export default class Editor extends React.Component {
           text = this.props.wrap(text)
         }
         const code = transform(text).code
-        this.props.onChange({ text, code })
+        this.props.onChange(code)
         isError = false
       } catch (e) {
         isError = true

@@ -1,31 +1,36 @@
 import React from 'react'
-import styles from './styles.css'
-import Editor from '../Editor'
 import requirejs from './../../requirejs'
+import { functions, argumentCombinations, findFunction } from 'what-the-function-core'
+import View from './view'
 
 export default React.createClass({
   componentDidMount() {
-    this.updateResults()
-    let lodash;
-    requirejs([ 'https://npmcdn.com/lodash@4.12.0' ], lib => { lodash = lib })
+    requirejs([ 'https://npmcdn.com/lodash@4.12.0' ], lodash => {
+      this.setState({ libraries: { lodash, Object } })
+      this.updateResults()
+    })
   },
   getInitialState: () => ({
-    suggestions: [ 1, 2, 3 ]
+    suggestions: []
   }),
   updateResults() {
-    // TODO
+    if (!this.state.libraries || !this.state.args || !this.state.result) return
+    const suggestions = findFunction(
+      functions(this.state.libraries),
+      argumentCombinations(...eval(this.state.args)),
+      eval(this.state.result)
+    )
+    this.setState({ suggestions })
   },
-  onResultChange: function ({ object: result }) {
-    this.setState({ result })
-    this.updateResults()
+  onResultChange: function (result) {
+    this.setState({ result }, this.updateResults)
   },
-  onArgumentsChange: function ({ object: args }) {
-    this.setState({ args })
-    this.updateResults()
+  onArgumentsChange: function (args) {
+    this.setState({ args }, this.updateResults)
   },
   render() {
     return (
-      <QueryPageView
+      <View
           onResultChange={this.onResultChange}
           onArgumentsChange={this.onArgumentsChange}
           suggestions={this.state.suggestions}
@@ -33,25 +38,3 @@ export default React.createClass({
     )
   }
 })
-
-export const QueryPageView = ({ onArgumentsChange, onResultChange, suggestions }) => {
-  return (
-      <div className={styles.component}>
-        <div>
-          modules(lodash).wtf(
-        </div>
-        <div className={styles.editor}>
-          <Editor wrap={s => `[${s}]`} onChange={onArgumentsChange}/>
-        </div>
-        <div>
-          ).eql(
-        </div>
-        <div className={styles.editor}>
-          <Editor onChange={onResultChange}/>
-        </div>
-        <div>
-          )
-        </div>
-      </div>
-  )
-}
