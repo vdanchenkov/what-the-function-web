@@ -22,6 +22,7 @@
 
 import path from 'path'
 import webpack from 'webpack'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -34,10 +35,10 @@ module.exports = {
   output: {
     path: path.join(__dirname, '.build'),
     filename: 'bundle.js',
-    publicPath: '/static/'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin()
   ],
   module: {
     noParse: [
