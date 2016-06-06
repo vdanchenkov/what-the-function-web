@@ -24,19 +24,43 @@ import path from 'path'
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 
+const prod = process.env.NODE_ENV === 'production'
+
 module.exports = {
-  devtool: 'cheap-module-eval-source-map',
-  entry: [
+  devtool: prod ? 'source-map' : 'cheap-module-eval-source-map',
+  entry: prod ? {
+    app: './modules/client',
+    babel: ['babel-core']
+  } : [
     'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:3000',
     'webpack/hot/only-dev-server',
     './modules/client'
   ],
   output: {
-    path: path.join(__dirname, '.build'),
+    path: path.join(__dirname, 'build'),
     filename: 'bundle.js',
   },
-  plugins: [
+  plugins: prod ? [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: "babel",
+      minChunks: Infinity,
+      filename: "babel.js",
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(true),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      }
+    }),
+    new HtmlWebpackPlugin()
+  ] : [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin()
   ],
