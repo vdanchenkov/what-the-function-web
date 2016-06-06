@@ -1,6 +1,6 @@
 var webpack = require('webpack')
 var WebpackDevServer = require('webpack-dev-server')
-var config = require('./webpack.config')
+var config = require('./webpack.config.babel.js')
 
 new WebpackDevServer(webpack(config), {
   publicPath: config.output.publicPath,
