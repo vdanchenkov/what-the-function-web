@@ -5,8 +5,8 @@ import View from './view'
 
 export default React.createClass({
   componentDidMount() {
-    requirejs([ 'https://npmcdn.com/lodash@4.12.0' ], lodash => {
-      this.setState({ libraries: { lodash, Object } })
+    requirejs([ 'https://npmcdn.com/lodash', 'https://npmcdn.com/ramda' ], (lodash, ramda) => {
+      this.setState({ libraries: { lodash, ramda, Object } })
       this.updateResults()
     })
   },
