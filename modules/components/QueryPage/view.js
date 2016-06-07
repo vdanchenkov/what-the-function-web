@@ -21,11 +21,11 @@ export default ({ onArgumentsChange, onResultChange, suggestions = [] }) => {
           )
         </div>
         {
-          suggestions.map(({ library, name, args, argsOrder }) => (
+          suggestions.map(({ library, name, args, argsOrder, argsLabels }) => (
               <div key={library + name + argsOrder}>
                 {library}.
                 {name}
-                ({argsOrder.map(index => String.fromCharCode('a'.charCodeAt() + index)).join(', ')})
+                ({argsLabels.join(', ')})
               </div>
           ))
         }
