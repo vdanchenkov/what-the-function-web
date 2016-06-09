@@ -1,12 +1,11 @@
 .component {
-  min-width: 400px;
-  margin-top: 48px;
+  width: 400px;
 }
 
-.editor {
-  padding-left: 1em;
+.component > * {
+  margin: 2em 0;
 }
 
-.suggestions {
-  margin-top: 2em;
+.component > :first-child, .component > :last-child {
+  margin: 0;
 }
