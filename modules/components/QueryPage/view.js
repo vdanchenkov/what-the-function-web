@@ -1,6 +1,12 @@
 import React from 'react'
 import styles from './styles.css'
 import Editor from '../Editor'
+import Prism from 'prismjs'
+import '!style!css!prismjs/themes/prism.css'
+
+const HL = ({code}) => (
+  <span dangerouslySetInnerHTML={{ __html: Prism.highlight(code, Prism.languages.javascript)}} />
+)
 
 export default ({ onArgumentsChange, onResultChange, suggestions = [] }) => {
   return (
@@ -20,15 +26,15 @@ export default ({ onArgumentsChange, onResultChange, suggestions = [] }) => {
         <div>
           )
         </div>
+        <div className={styles.suggestions}>
         {
           suggestions.map(({ library, name, args, argsOrder, argsLabels }) => (
               <div key={library + name + argsOrder}>
-                {library}.
-                {name}
-                ({argsLabels.join(', ')})
+                <HL code={library + '.' + name +'(' + argsLabels.join(', ') + ')'}/>
               </div>
           ))
         }
+        </div>
       </div>
   )
 }
