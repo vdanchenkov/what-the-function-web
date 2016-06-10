@@ -6,3 +6,11 @@
 .editor {
   padding-left: 1rem;
 }
+
+.sample {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-decoration: underline;
+  color: #479DB9;
+  padding-right: 1rem;
+  float: right;
+}

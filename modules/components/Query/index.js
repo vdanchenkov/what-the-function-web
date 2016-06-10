@@ -6,6 +6,7 @@ export default ({onArgumentsChange, onResultChange}) => (
   <div className={styles.component}>
     <div>
       wtf({'{ lodash, ramda, Object }'})(
+      <a className={styles.sample}>sample</a>
     </div>
     <div className={styles.editor}>
       <Editor wrap={s => `[${s}]`} onChange={onArgumentsChange}/>
