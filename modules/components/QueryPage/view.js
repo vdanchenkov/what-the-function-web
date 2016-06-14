@@ -5,12 +5,12 @@ import Editor from '../Editor'
 import Manual from '../Manual'
 import Suggestions from '../Suggestions'
 
-export default ({ onArgumentsChange, onResultChange, suggestions = [] }) => {
+export default ({ onArgumentsChange, onResultChange, suggestions = [], loading }) => {
   return (
       <div className={styles.component}>
         <Manual/>
         <Query {...{onArgumentsChange, onResultChange}} />
-        <Suggestions {...{suggestions}}/>
+        <Suggestions {...{suggestions, loading}}/>
       </div>
   )
 }

@@ -2,25 +2,36 @@ import React from 'react'
 import requirejs from './../../requirejs'
 import { functions, argumentCombinations, findFunction } from 'what-the-function-core'
 import View from './view'
+import Worker from 'worker!./worker'
+
+const worker = new Worker
 
 export default React.createClass({
   componentDidMount() {
-    requirejs([ 'https://npmcdn.com/lodash', 'https://npmcdn.com/ramda' ], (lodash, ramda) => {
-      this.setState({ libraries: { lodash, ramda, Object } })
-      this.updateResults()
-    })
+    worker.onmessage = (event) => {
+      const { done, suggestions } = event.data
+
+      if (done) {
+        this.setState({
+          loading: false,
+          suggestions: suggestions,
+        })
+      } else {
+        this.setState({
+          loading: true,
+          suggestions: suggestions,
+        })
+      }
+    }
   },
   getInitialState: () => ({
     suggestions: []
   }),
   updateResults() {
-    if (!this.state.libraries || !this.state.args || !this.state.result) return
-    const suggestions = findFunction(
-      functions(this.state.libraries),
-      argumentCombinations(...eval(this.state.args)),
-      eval(this.state.result)
-    )
-    this.setState({ suggestions })
+    if (!this.state.args || !this.state.result) return
+    const args = argumentCombinations(...eval(this.state.args))
+    const result = eval(this.state.result)
+    worker.postMessage({ args, result })
   },
   onResultChange: function (result) {
     this.setState({ result }, this.updateResults)
@@ -34,6 +45,7 @@ export default React.createClass({
           onResultChange={this.onResultChange}
           onArgumentsChange={this.onArgumentsChange}
           suggestions={this.state.suggestions}
+          loading={this.state.loading}
       />
     )
   }

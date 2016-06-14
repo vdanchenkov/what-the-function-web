@@ -56,12 +56,14 @@
     "react-dom": "^15.0.2",
     "react-hot-loader": "^3.0.0-beta.1",
     "react-router": "2.0.0",
+    "react-spinner": "0.2.6",
     "react-title-component": "1.0.1",
     "script-loader": "0.7.0",
     "source-map-support": "0.4.0",
     "style-loader": "0.13.0",
     "url-loader": "0.5.7",
     "webpack": "1.13.0",
-    "webpack-dev-server": "1.14.1"
+    "webpack-dev-server": "1.14.1",
+    "worker-loader": "0.7.0"
   }
 }
