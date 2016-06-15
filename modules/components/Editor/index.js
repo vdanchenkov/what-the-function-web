@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
-import { Editor as DraftEditor, EditorState } from 'draft-js'
+import { Editor as DraftEditor, EditorState, convertFromRaw } from 'draft-js'
+import PrismDecorator from 'draft-js-prism'
 import transform from './../../transform'
 import styles from './styles.css'
 import classnames from 'classnames'
@@ -7,7 +8,9 @@ import classnames from 'classnames'
 export default class Editor extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { editorState: EditorState.createEmpty() }
+    const decorator = new PrismDecorator({ defaultSyntax: 'javascript', filter: () => true })
+    this.state = { editorState: EditorState.createEmpty(decorator) }
+
     this.onCodeChange = (editorState) => {
       let text = editorState.getCurrentContent().getPlainText()
       if (this.props.wrap) {
