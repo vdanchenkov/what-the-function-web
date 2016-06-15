@@ -1,7 +1,6 @@
 import React from 'react'
 import styles from './styles.css'
-import Prism from 'prismjs'
-import '!style!css!prismjs/themes/prism.css'
+import SyntaxHighlight from './../SyntaxHighlight'
 import '!style!css!react-spinner/react-spinner.css'
 import Spinner from 'react-spinner'
 
@@ -15,7 +14,7 @@ export default ({suggestions, loading}) => (
     {
       suggestions.map(({ library, name, args, argsLabels }) => (
           <div key={library + name + argsLabels}>
-            <HL code={library + '.' + name +'(' + argsLabels.join(', ') + ')'}/>
+            <SyntaxHighlight code={library + '.' + name +'(' + argsLabels.join(', ') + ')'}/>
           </div>
       ))
     }
