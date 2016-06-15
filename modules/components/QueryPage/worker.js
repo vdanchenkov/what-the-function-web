@@ -1,6 +1,6 @@
 import 'babel-polyfill'
 import "script!requirejs/require"
-import { functions } from 'what-the-function-core'
+import { functions, argumentCombinations } from 'what-the-function-core'
 import cloneDeep from 'lodash/lang/cloneDeep'
 import isEqual from 'lodash/lang/isEqual'
 
@@ -11,13 +11,28 @@ requirejs([ 'https://npmcdn.com/lodash', 'https://npmcdn.com/ramda' ], (lodash, 
 })
 
 self.onmessage = event => {
-  console.time('function search')
-  const startTime = new Date().getTime();
+  console.log(`search wtf(${event.data.args.slice(1,-1)}) == ${event.data.result}`)
+  console.time('  total')
+  console.time('  init')
   const suggestions = []
   postMessage({ suggestions })
-  const { args, result } = event.data
+  let args, result
+  try {
+    args = eval(event.data.args)
+    result = eval(event.data.result)
+  } catch (e) {
+    console.log(e)
+    postMessage({ done: true, suggestions })
+    return
+  }
+
+  const argsList = argumentCombinations(...args)
+
+  console.timeEnd('  init')
+  console.time('  iteration')
+
   for (const f of funcList) {
-    for (const a of args) {
+    for (const a of argsList) {
       try {
         if (isEqual(f.func(...cloneDeep(a.args)), result)) {
           suggestions.push({
@@ -33,6 +48,7 @@ self.onmessage = event => {
     }
   }
   postMessage({ done: true, suggestions })
-  console.timeEnd('function search')
+  console.timeEnd('  iteration')
+  console.timeEnd('  total')
 }
 
