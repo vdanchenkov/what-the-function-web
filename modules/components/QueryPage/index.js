@@ -1,33 +1,22 @@
 import React from 'react'
 import View from './view'
-import Worker from 'worker!./worker'
+import processor from './processor'
 import throttle from 'lodash/function/throttle'
 
 export default React.createClass({
   componentDidMount() {
-    this.worker = new Worker;
-    this.worker.onmessage = this.onMessage
-    this.onProgressUpdate = throttle((progress) => {
-      this.setState({ progress })
-    }, 10)
+    this.processor = processor(
+        (progress) => this.setState({progress}),
+        (suggestions) => this.setState({suggestions})
+    )
   },
   getInitialState: () => ({
     suggestions: []
   }),
-  onMessage(event) {
-    const { done, suggestions, currentIteration, totalIterations } = event.data
-    if (suggestions) {
-      this.setState({ suggestions })
-    }
-
-    if (currentIteration) {
-      this.onProgressUpdate(Math.round(100 * currentIteration / totalIterations))
-    }
-  },
   updateResults() {
     if (!this.state.args || !this.state.result) return
     const { args, result } = this.state
-    this.worker.postMessage({ args, result })
+    this.processor.start(args, result)
   },
   onResultChange: function (result) {
     this.setState({ result }, this.updateResults)

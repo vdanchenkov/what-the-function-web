@@ -5,7 +5,7 @@ import cloneDeep from 'lodash/lang/cloneDeep'
 import isEqual from 'lodash/lang/isEqual'
 
 let funcList = []
-
+// TODO wait for modules to load
 requirejs([ 'https://npmcdn.com/lodash', 'https://npmcdn.com/ramda' ], (lodash, ramda) => {
   funcList = functions({ lodash, ramda, Object })
 })
@@ -32,7 +32,7 @@ self.onmessage = event => {
   console.time('  iteration')
 
   const totalIterations = funcList.length * argsList.length
-  let currentIteration = 0;
+  let currentIteration = 1;
 
   for (const f of funcList) {
     for (const a of argsList) {
