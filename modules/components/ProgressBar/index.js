@@ -5,7 +5,6 @@ export default ({percent}) => {
   const style = {
     width: percent + '%',
   }
-  console.log(percent)
   if (percent == 100) {
     style.visibility = 'hidden'
   }
