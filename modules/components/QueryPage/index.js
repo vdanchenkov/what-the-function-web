@@ -1,35 +1,33 @@
 import React from 'react'
 import View from './view'
 import Worker from 'worker!./worker'
-
-const worker = new Worker
+import throttle from 'lodash/function/throttle'
 
 export default React.createClass({
   componentDidMount() {
-    worker.onmessage = this.onMessage
+    this.worker = new Worker;
+    this.worker.onmessage = this.onMessage
+    this.onProgressUpdate = throttle((progress) => {
+      this.setState({ progress })
+    }, 10)
   },
   getInitialState: () => ({
     suggestions: []
   }),
   onMessage(event) {
-    const { done, suggestions } = event.data
+    const { done, suggestions, currentIteration, totalIterations } = event.data
+    if (suggestions) {
+      this.setState({ suggestions })
+    }
 
-    if (done) {
-      this.setState({
-        loading: false,
-        suggestions: suggestions,
-      })
-    } else {
-      this.setState({
-        loading: true,
-        suggestions: suggestions,
-      })
+    if (currentIteration) {
+      this.onProgressUpdate(Math.round(100 * currentIteration / totalIterations))
     }
   },
   updateResults() {
     if (!this.state.args || !this.state.result) return
     const { args, result } = this.state
-    worker.postMessage({ args, result })
+    this.worker.postMessage({ args, result })
   },
   onResultChange: function (result) {
     this.setState({ result }, this.updateResults)
@@ -44,6 +42,7 @@ export default React.createClass({
           onArgumentsChange={this.onArgumentsChange}
           suggestions={this.state.suggestions}
           loading={this.state.loading}
+          progress={this.state.progress}
       />
     )
   }

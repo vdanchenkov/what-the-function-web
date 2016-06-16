@@ -29,6 +29,9 @@ export default class Editor extends React.Component {
       this.setState({ editorState, isError, text })
     }
   }
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextState.editorState !== this.state.editorState
+  }
   render() {
     const { editorState } = this.state
     return (

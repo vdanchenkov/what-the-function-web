@@ -31,6 +31,9 @@ self.onmessage = event => {
   console.timeEnd('  init')
   console.time('  iteration')
 
+  const totalIterations = funcList.length * argsList.length
+  let currentIteration = 0;
+
   for (const f of funcList) {
     for (const a of argsList) {
       try {
@@ -40,11 +43,13 @@ self.onmessage = event => {
             library: f.library,
             name: f.name
           });
-          postMessage(suggestions)
+          //postMessage({ suggestions })
         }
       } catch (e) {
 
       }
+      postMessage({ currentIteration, totalIterations })
+      currentIteration++
     }
   }
   postMessage({ done: true, suggestions })
