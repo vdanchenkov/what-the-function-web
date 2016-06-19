@@ -2,7 +2,7 @@ import Worker from 'worker!./worker'
 import throttle from 'lodash/function/throttle'
 
 export default (progressCallback, suggestionsCallback) => {
-  let worker, currentIteration = 0, totalIterations = 0, lastResultTimestamp
+  let worker, currentIteration = 0, totalIterations = 0, lastResultTimestamp, args, result
 
   const onProgress = throttle(progressCallback, 25)
 
@@ -29,20 +29,27 @@ export default (progressCallback, suggestionsCallback) => {
 
   const check = () => {
     if (inProgress() && new Date().getTime() - lastResultTimestamp > 200) {
-      console.error('Stalled on iteration %s from %s. Abort', currentIteration, totalIterations)
+      console.error('Stalled on iteration %s from %s. Restart in 3 seconds', currentIteration, totalIterations)
       getWorker().terminate()
-      currentIteration = totalIterations
       worker = undefined;
       getWorker();
-      onProgress(Math.round(100 * currentIteration / totalIterations))
+      setTimeout(() => {
+        getWorker().postMessage({ args, result, startIteration: currentIteration + 1 })
+      }, 3000)
     }
   }
-  setInterval(check, 200)
+  setInterval(check, 4000)
+  const setParams = (_args, _result) => {
+    args = _args
+    result = _result
+  }
+
+  getWorker()
 
   return {
     start(args, result) {
-      const worker = getWorker()
-      worker.postMessage({ args, result })
+      setParams(args, result)
+      getWorker().postMessage({ args, result })
     }
   }
 }

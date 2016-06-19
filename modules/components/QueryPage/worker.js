@@ -25,35 +25,38 @@ self.onmessage = event => {
     postMessage({ done: true, suggestions })
     return
   }
+  const startIteration = event.data.startIteration || 1
 
   const argsList = argumentCombinations(...args)
 
   console.timeEnd('  init')
-  console.time('  iteration')
-
+  console.time('  iterations')
   const totalIterations = funcList.length * argsList.length
+  console.log(`going through ${totalIterations} iterations`)
   let currentIteration = 1;
 
   for (const f of funcList) {
     for (const a of argsList) {
-      try {
-        if (isEqual(f.func(...cloneDeep(a.args)), result)) {
-          suggestions.push({
-            argsLabels: a.argsLabels,
-            library: f.library,
-            name: f.name
-          });
-          //postMessage({ suggestions })
-        }
-      } catch (e) {
+      if (currentIteration >= startIteration) {
+        postMessage({ currentIteration, totalIterations })
+        try {
+          if (isEqual(f.func(...cloneDeep(a.args)), result)) {
+            suggestions.push({
+              argsLabels: a.argsLabels,
+              library: f.library,
+              name: f.name
+            });
+            //postMessage({ suggestions })
+          }
+        } catch (e) {
 
+        }
       }
-      postMessage({ currentIteration, totalIterations })
       currentIteration++
     }
   }
   postMessage({ done: true, suggestions })
-  console.timeEnd('  iteration')
+  console.timeEnd('  iterations')
   console.timeEnd('  total')
 }
 
