@@ -1,0 +1,10 @@
+.component {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+a.component:hover {
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}
