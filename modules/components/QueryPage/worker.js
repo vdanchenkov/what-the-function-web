@@ -4,13 +4,16 @@ import { functions, argumentCombinations } from 'what-the-function-core'
 import cloneDeep from 'lodash/lang/cloneDeep'
 import isEqual from 'lodash/lang/isEqual'
 
-let funcList = []
-// TODO wait for modules to load
-requirejs([ 'https://npmcdn.com/lodash', 'https://npmcdn.com/ramda' ], (lodash, ramda) => {
-  funcList = functions({ lodash, ramda, Object })
+console.time('require')
+
+const initPromise = new Promise((resolve, reject) => {
+  requirejs([ 'https://npmcdn.com/lodash', 'https://npmcdn.com/ramda' ], (lodash, ramda) => {
+    console.timeEnd('require')
+    resolve(functions({ lodash, ramda, Object }))
+  })
 })
 
-self.onmessage = event => {
+const onMessage = (event, funcList) => {
   console.log(`search wtf(${event.data.args.slice(1,-1)}) == ${event.data.result}`)
   console.time('  total')
   console.time('  init')
@@ -60,3 +63,6 @@ self.onmessage = event => {
   console.timeEnd('  total')
 }
 
+self.onmessage = (event) => {
+  initPromise.then(funcList => onMessage(event, funcList))
+}

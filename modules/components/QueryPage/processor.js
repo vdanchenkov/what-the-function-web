@@ -29,17 +29,15 @@ export default (progressCallback, suggestionsCallback) => {
   }
 
   const check = () => {
-    if (inProgress() && new Date().getTime() - lastResultTimestamp > 200) {
-      console.error('Stalled on iteration %s from %s. Restart in 3 seconds', currentIteration, totalIterations)
+    if (inProgress() && lastResultTimestamp && new Date().getTime() - lastResultTimestamp > 200) {
+      console.error('Stalled on iteration %s from %s. Restart.', currentIteration, totalIterations)
       getWorker().terminate()
-      worker = undefined;
-      getWorker();
-      setTimeout(() => {
-        getWorker().postMessage({ ...searchParams, startIteration: currentIteration + 1 })
-      }, 3000)
+      worker = undefined
+      lastResultTimestamp = 0
+      getWorker().postMessage({ ...searchParams, startIteration: currentIteration + 1 })
     }
   }
-  setInterval(check, 4000)
+  setInterval(check, 200)
 
   getWorker()
 
