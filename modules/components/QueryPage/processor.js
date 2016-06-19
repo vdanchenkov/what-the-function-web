@@ -2,7 +2,8 @@ import Worker from 'worker!./worker'
 import throttle from 'lodash/function/throttle'
 
 export default (progressCallback, suggestionsCallback) => {
-  let worker, currentIteration = 0, totalIterations = 0, lastResultTimestamp, args, result
+  let worker, currentIteration = 0, totalIterations = 0, lastResultTimestamp
+  let searchParams
 
   const onProgress = throttle(progressCallback, 25)
 
@@ -34,22 +35,18 @@ export default (progressCallback, suggestionsCallback) => {
       worker = undefined;
       getWorker();
       setTimeout(() => {
-        getWorker().postMessage({ args, result, startIteration: currentIteration + 1 })
+        getWorker().postMessage({ ...searchParams, startIteration: currentIteration + 1 })
       }, 3000)
     }
   }
   setInterval(check, 4000)
-  const setParams = (_args, _result) => {
-    args = _args
-    result = _result
-  }
 
   getWorker()
 
   return {
     start(args, result) {
-      setParams(args, result)
-      getWorker().postMessage({ args, result })
+      searchParams = { args, result }
+      getWorker().postMessage(searchParams)
     }
   }
 }
