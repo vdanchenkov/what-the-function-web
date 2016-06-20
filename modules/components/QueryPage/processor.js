@@ -1,4 +1,4 @@
-import Worker from 'worker!./worker'
+import Worker from 'worker?inline!./worker'
 import throttle from 'lodash/function/throttle'
 import { timeout } from './../../constants'
 
