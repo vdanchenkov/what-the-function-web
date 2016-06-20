@@ -1,5 +1,6 @@
 import Worker from 'worker!./worker'
 import throttle from 'lodash/function/throttle'
+import { timeout } from './../../constants'
 
 export default (progressCallback, suggestionsCallback) => {
   let worker, currentIteration = 0, totalIterations = 0, lastResultTimestamp
@@ -29,7 +30,7 @@ export default (progressCallback, suggestionsCallback) => {
   }
 
   const check = () => {
-    if (inProgress() && lastResultTimestamp && new Date().getTime() - lastResultTimestamp > 100) {
+    if (inProgress() && lastResultTimestamp && new Date().getTime() - lastResultTimestamp > timeout) {
       console.error('Stalled on iteration %s from %s. Restart.', currentIteration, totalIterations)
       getWorker().terminate()
       worker = undefined
@@ -37,7 +38,7 @@ export default (progressCallback, suggestionsCallback) => {
       getWorker().postMessage({ ...searchParams, startIteration: currentIteration + 1 })
     }
   }
-  setInterval(check, 100)
+  setInterval(check, timeout)
 
   getWorker()
 

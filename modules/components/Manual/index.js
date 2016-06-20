@@ -1,5 +1,6 @@
 import React from 'react'
 import { component, header, content } from './styles.css'
+import { timeout } from './../../constants'
 
 export default () => (
   <div className={component}>
@@ -7,10 +8,13 @@ export default () => (
       What The Function
     </div>
     <div className={content}>
-      Provide function arguments and expected result.
-      I will try to find appropriate functions.
-      I will try to permutate first 3 arguments.
-      Permutation of remaining arguments disabled for performance reasons.
+      <p>
+        Provide function arguments and expected result to get list of suitable functions.
+      </p>
+      <p>
+        Three initial arguments will be permuted.
+        In case function execution takes more then { timeout } ms, it will be skipped.
+      </p>
     </div>
   </div>
 )
