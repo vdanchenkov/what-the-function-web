@@ -37,15 +37,12 @@ self.onmessage = (event) => {
   console.timeEnd('  eval modules')
   const funcList = functions({ ...modules, Object })
 
-  const suggestions = []
-  postMessage({ suggestions })
   let args, result
   try {
     args = eval(event.data.args)
     result = eval(event.data.result)
   } catch (e) {
-    console.log(e)
-    postMessage({ done: true, suggestions })
+    postMessage({ error: e.toString() })
     return
   }
   const startIteration = event.data.startIteration || 1
@@ -64,12 +61,12 @@ self.onmessage = (event) => {
         postMessage({ currentIteration, totalIterations })
         try {
           if (isEqual(f.func(...cloneDeep(a.args)), result)) {
-            suggestions.push({
+            const suggestion = {
               argsLabels: a.argsLabels,
               library: f.library,
               name: f.name
-            });
-            //postMessage({ suggestions })
+            }
+            postMessage({ suggestion })
           }
         } catch (e) {
 
@@ -78,7 +75,6 @@ self.onmessage = (event) => {
       currentIteration++
     }
   }
-  postMessage({ done: true, suggestions })
   console.timeEnd('  iterations')
   console.timeEnd('  total')
 }
