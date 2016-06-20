@@ -1,22 +1,42 @@
 import 'babel-polyfill'
-import "script!requirejs/require"
 import { functions, argumentCombinations } from 'what-the-function-core'
 import cloneDeep from 'lodash/lang/cloneDeep'
 import isEqual from 'lodash/lang/isEqual'
+import zipObject from 'lodash/array/zipObject'
+import memoize from 'lodash/function/memoize'
 
-console.time('require')
+const loadModules = memoize((modules) => {
+  // prevent node style export
+  const exports = undefined
+  const module = undefined
 
-const initPromise = new Promise((resolve, reject) => {
-  requirejs([ 'https://npmcdn.com/lodash', 'https://npmcdn.com/ramda' ], (lodash, ramda) => {
-    console.timeEnd('require')
-    resolve(functions({ lodash, ramda, Object }))
-  })
+  const resultModules = []
+  const resultNames = []
+
+  const define = (...args) => {
+    const factory = args[args.length - 1]
+    resultModules.push(typeof factory == 'function' ? factory() : factory)
+  }
+  define.amd = {}
+
+  for (const moduleName in modules) {
+    eval(modules[moduleName])
+    // iteration order is not guarantied, so we have to push names in the same order as modules
+    resultNames.push(moduleName)
+  }
+
+  return zipObject(resultNames, resultModules)
 })
 
-const onMessage = (event, funcList) => {
-  console.log(`search wtf(${event.data.args.slice(1,-1)}) == ${event.data.result}`)
+self.onmessage = (event) => {
+  console.log(`search wtf(${event.data.args.slice(1,-1)}) == ${event.data.result} from ${Object.keys(event.data.modules)}`)
   console.time('  total')
   console.time('  init')
+  console.time('  eval modules')
+  const modules = loadModules(event.data.modules)
+  console.timeEnd('  eval modules')
+  const funcList = functions({ ...modules, Object })
+
   const suggestions = []
   postMessage({ suggestions })
   let args, result
@@ -61,8 +81,4 @@ const onMessage = (event, funcList) => {
   postMessage({ done: true, suggestions })
   console.timeEnd('  iterations')
   console.timeEnd('  total')
-}
-
-self.onmessage = (event) => {
-  initPromise.then(funcList => onMessage(event, funcList))
 }

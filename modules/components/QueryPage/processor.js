@@ -43,8 +43,8 @@ export default (progressCallback, suggestionsCallback) => {
   getWorker()
 
   return {
-    start(args, result) {
-      searchParams = { args, result }
+    start(args, result, modules) {
+      searchParams = { args, result, modules }
       getWorker().postMessage(searchParams)
     }
   }
