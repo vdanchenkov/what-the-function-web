@@ -1,9 +1,9 @@
 import 'babel-polyfill'
 import { functions, argumentCombinations } from 'what-the-function-core'
-import cloneDeep from 'lodash/lang/cloneDeep'
-import isEqual from 'lodash/lang/isEqual'
-import zipObject from 'lodash/array/zipObject'
-import memoize from 'lodash/function/memoize'
+import cloneDeep from 'lodash/cloneDeep'
+import isEqual from 'lodash/isEqual'
+import zipObject from 'lodash/zipObject'
+import memoize from 'lodash/memoize'
 
 const loadModules = memoize((modules) => {
   // prevent node style export

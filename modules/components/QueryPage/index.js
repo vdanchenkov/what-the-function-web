@@ -1,8 +1,8 @@
 import React from 'react'
 import View from './view'
 import processor from './processor'
-import throttle from 'lodash/function/throttle'
-import zipObject from 'lodash/array/zipObject'
+import throttle from 'lodash/throttle'
+import zipObject from 'lodash/zipObject'
 
 export default React.createClass({
   componentDidMount() {

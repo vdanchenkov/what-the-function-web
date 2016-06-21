@@ -1,5 +1,5 @@
 import Worker from 'worker?inline!./worker'
-import throttle from 'lodash/function/throttle'
+import throttle from 'lodash/throttle'
 import { timeout } from './../../constants'
 
 export default (progressCallback, suggestionsCallback) => {
