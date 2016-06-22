@@ -1,5 +1,5 @@
 import 'babel-polyfill'
-import { functions, argumentCombinations } from 'what-the-function-core'
+import { functions, argumentCombinations, snippets } from 'what-the-function-core'
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import zipObject from 'lodash/zipObject'
@@ -35,7 +35,7 @@ self.onmessage = (event) => {
   console.time('  eval modules')
   const modules = loadModules(event.data.modules)
   console.timeEnd('  eval modules')
-  const funcList = functions({ ...modules, Object })
+  const funcList = [ ...functions({ ...modules, Object }), ...snippets ]
 
   let args, result
   try {
@@ -64,7 +64,8 @@ self.onmessage = (event) => {
             const suggestion = {
               argsLabels: a.argsLabels,
               library: f.library,
-              name: f.name
+              name: f.name,
+              display: f.display
             }
             postMessage({ suggestion })
           }
