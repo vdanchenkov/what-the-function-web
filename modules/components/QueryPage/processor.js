@@ -3,7 +3,7 @@ import throttle from 'lodash/throttle'
 import { timeout } from './../../constants'
 
 export default (progressCallback, suggestionsCallback) => {
-  let worker, lastIteration = 0, totalIterations = 0, timestamp
+  let worker, lastIteration = 0, totalIterations = 0, timestamp, pid, nextPid = 1
   let searchParams
   let suggestions
 
@@ -14,6 +14,9 @@ export default (progressCallback, suggestionsCallback) => {
     worker = worker || new Worker
 
     worker.onmessage = ({ data }) => {
+      if (data.pid != pid) {
+        return
+      }
       switch(data.action) {
         case 'start':
           totalIterations = data.total
@@ -29,6 +32,7 @@ export default (progressCallback, suggestionsCallback) => {
           break
         case 'finish':
           timestamp = null
+          pid = null
           onSuggestions(suggestions)
           console.timeEnd('process')
           break
@@ -41,12 +45,11 @@ export default (progressCallback, suggestionsCallback) => {
     getWorker().terminate()
     worker = undefined
     timestamp = null
+    pid = null
   }
 
-  const inProgress = () => !!timestamp
-
   const check = () => {
-    if (inProgress() && new Date().getTime() - timestamp > timeout) {
+    if (timestamp && new Date().getTime() - timestamp > timeout) {
       console.error('Stalled on iteration %s from %s. Restart.', lastIteration, totalIterations)
       terminate()
       getWorker().postMessage({ ...searchParams, skip: lastIteration + 1 })
@@ -57,15 +60,13 @@ export default (progressCallback, suggestionsCallback) => {
   getWorker()
 
   const start = (args, result, modules) => {
-    if (inProgress) {
-      terminate()
-      console.log('Terminate on parameter change')
-    }
+    pid = nextPid++
     console.time('process')
     suggestions = []
     onSuggestions(suggestions)
     searchParams = { args, result, modules }
-    getWorker().postMessage(searchParams)
+    timestamp = null
+    getWorker().postMessage({ pid, ...searchParams })
   }
 
   return { start }
