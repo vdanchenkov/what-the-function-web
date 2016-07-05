@@ -37,12 +37,18 @@ export default (progressCallback, suggestionsCallback) => {
     return worker
   }
 
+  const terminate = () => {
+    getWorker().terminate()
+    worker = undefined
+    timestamp = null
+  }
+
+  const inProgress = () => !!timestamp
+
   const check = () => {
-    if (timestamp && new Date().getTime() - timestamp > timeout) {
+    if (inProgress() && new Date().getTime() - timestamp > timeout) {
       console.error('Stalled on iteration %s from %s. Restart.', lastIteration, totalIterations)
-      getWorker().terminate()
-      worker = undefined
-      timestamp = null
+      terminate()
       getWorker().postMessage({ ...searchParams, skip: lastIteration + 1 })
     }
   }
@@ -51,6 +57,10 @@ export default (progressCallback, suggestionsCallback) => {
   getWorker()
 
   const start = (args, result, modules) => {
+    if (inProgress) {
+      terminate()
+      console.log('Terminate on parameter change')
+    }
     console.time('process')
     suggestions = []
     onSuggestions(suggestions)
