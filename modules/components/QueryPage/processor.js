@@ -24,7 +24,7 @@ export default (progressCallback, suggestionsCallback) => {
           lastIteration = data.current
           onProgress(Math.round(100 * lastIteration / totalIterations))
           if (data.display) {
-            suggestions.push({ id: data.current, display: data.display })
+            suggestions.push({ id: data.current, display: data.display, modified: data.modified })
           }
           break
         case 'finish':

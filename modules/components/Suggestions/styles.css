@@ -14,3 +14,11 @@
   height: 100px;
   position: absolute;
 }
+
+.warning {
+  margin-left: -1.2em;
+  width: 1em;
+  height: 1em;
+  padding-right: 0.2em;
+  vertical-align: -0.1em;
+}

@@ -89,6 +89,9 @@ module.exports = {
     }, {
       test: /\.json$/,
       loader: 'json-loader'
+    }, {
+      loader: 'url-loader?limit=100000',
+      test: /\.(gif|jpg|png|woff|woff2|eot|ttf|svg)$/
     } ]
   },
   node: {
