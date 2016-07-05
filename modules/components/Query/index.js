@@ -15,7 +15,7 @@ export default ({onArgumentsChange, onResultChange}) => (
       ).eql(
     </div>
     <div className={styles.editor}>
-      <Editor onChange={onResultChange}/>
+      <Editor wrap={s => `(${s})`} onChange={onResultChange}/>
     </div>
     <div>
       )
