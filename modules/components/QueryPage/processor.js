@@ -3,48 +3,47 @@ import throttle from 'lodash/throttle'
 import { timeout } from './../../constants'
 
 export default (progressCallback, suggestionsCallback) => {
-  let worker, currentIteration = 0, totalIterations = 0, lastResultTimestamp
+  let worker, lastIteration = 0, totalIterations = 0, timestamp
   let searchParams
   let suggestions
 
   const onProgress = throttle(progressCallback, 25)
   const onSuggestions = suggestions => suggestionsCallback([...suggestions])
 
-  const inProgress = () => currentIteration < totalIterations
-
   const getWorker = () => {
     worker = worker || new Worker
 
     worker.onmessage = ({ data }) => {
-      if (data.suggestion) {
-        suggestions.push(data.suggestion)
-      }
-      if (data.totalIterations) {
-        totalIterations = data.totalIterations
-      }
-      if (data.currentIteration) {
-        lastResultTimestamp = new Date().getTime()
-        currentIteration = data.currentIteration
-        onProgress(Math.round(100 * currentIteration / totalIterations))
-        if (currentIteration == totalIterations) {
+      switch(data.action) {
+        case 'start':
+          totalIterations = data.total
+          timestamp = new Date().getTime()
+          break
+        case 'step':
+          timestamp = new Date().getTime()
+          lastIteration = data.current
+          onProgress(Math.round(100 * lastIteration / totalIterations))
+          if (data.display) {
+            suggestions.push({ id: data.current, display: data.display })
+          }
+          break
+        case 'finish':
+          timestamp = null
           onSuggestions(suggestions)
           console.timeEnd('process')
-        }
-        if (currentIteration > totalIterations) {
-          console.error('Current iteration index should not be greater then total')
-        }
+          break
       }
     }
     return worker
   }
 
   const check = () => {
-    if (inProgress() && lastResultTimestamp && new Date().getTime() - lastResultTimestamp > timeout) {
-      console.error('Stalled on iteration %s from %s. Restart.', currentIteration, totalIterations)
+    if (timestamp && new Date().getTime() - timestamp > timeout) {
+      console.error('Stalled on iteration %s from %s. Restart.', lastIteration, totalIterations)
       getWorker().terminate()
       worker = undefined
-      lastResultTimestamp = 0
-      getWorker().postMessage({ ...searchParams, startIteration: currentIteration + 1 })
+      timestamp = null
+      getWorker().postMessage({ ...searchParams, skip: lastIteration + 1 })
     }
   }
   setInterval(check, timeout)

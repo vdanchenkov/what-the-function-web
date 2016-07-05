@@ -1,6 +1,5 @@
 import 'babel-polyfill'
-import { functions, argumentCombinations, snippets, builtInFunctions } from 'what-the-function-core'
-import cloneDeep from 'lodash/cloneDeep'
+import { wtf, snippets, builtInFunctions } from 'what-the-function-core'
 import isEqual from 'lodash/isEqual'
 import zipObject from 'lodash/zipObject'
 import memoize from 'lodash/memoize'
@@ -29,53 +28,36 @@ const loadModules = memoize((modules) => {
 })
 
 self.onmessage = (event) => {
-  console.log(`search wtf(${event.data.args.slice(1,-1)}) == ${event.data.result} from ${Object.keys(event.data.modules)}`)
+  const skip = event.data.skip
+  console.log(`search wtf(${event.data.args.slice(1,-1)}) == ${event.data.result} from ${Object.keys(event.data.modules)}, skip: ${event.data.skip || 0}`)
   console.time('  total')
   console.time('  init')
   console.time('  eval modules')
   const modules = loadModules(event.data.modules)
   console.timeEnd('  eval modules')
-  const funcList = [ ...functions(modules), ...builtInFunctions, ...snippets ]
 
   let args, result
   try {
     args = eval(event.data.args)
     result = eval(event.data.result)
   } catch (e) {
-    postMessage({ error: e.toString() })
+    postMessage({ action: 'error', message: e.toString() })
     return
   }
-  const startIteration = event.data.startIteration || 1
-
-  const argsList = argumentCombinations(...args)
-
   console.timeEnd('  init')
+
   console.time('  iterations')
-  const totalIterations = funcList.length * argsList.length
-  console.log(`going through ${totalIterations} iterations`)
-  let currentIteration = 1;
-
-  for (const f of funcList) {
-    for (const a of argsList) {
-      if (currentIteration >= startIteration) {
-        postMessage({ currentIteration, totalIterations })
-        try {
-          if (isEqual(f.func(...cloneDeep(a.args)), result)) {
-            const suggestion = {
-              argsLabels: a.argsLabels,
-              library: f.library,
-              name: f.name,
-              display: f.display
-            }
-            postMessage({ suggestion })
-          }
-        } catch (e) {
-
-        }
-      }
-      currentIteration++
+  const outcomes = wtf(modules, builtInFunctions, snippets)(...args)({ skip })
+  console.log(`going through ${outcomes.total} iterations`)
+  postMessage({ action: 'start', total: outcomes.total })
+  for (const outcome of outcomes) {
+    if (isEqual(outcome.result, result)) {
+      postMessage({ action: 'step', ...outcome })
+    } else {
+      postMessage({ action: 'step', current: outcome.current })
     }
   }
+  postMessage({ action: 'finish' })
   console.timeEnd('  iterations')
   console.timeEnd('  total')
 }
