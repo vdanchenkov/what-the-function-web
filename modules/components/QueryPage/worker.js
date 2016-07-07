@@ -2,9 +2,21 @@ import 'babel-polyfill'
 import { wtf, snippets, builtInFunctions } from 'what-the-function-core'
 import isEqual from 'lodash/isEqual'
 import zipObject from 'lodash/zipObject'
-import memoize from 'lodash/memoize'
 
-const loadModules = memoize((modules) => {
+let resolveModules
+
+const modulesToSearch = new Promise(resolve => resolveModules = resolve)
+
+self.onmessage = event => {
+  if (event.data.action == 'loadModules') {
+    resolveModules(loadModules(event.data.payload))
+  } else {
+    modulesToSearch.then(modules => search(modules, event.data.args, event.data.result, event.data.skip))
+  }
+}
+
+const loadModules = modules => {
+  console.time('eval modules')
   // prevent node style export
   const exports = undefined
   const module = undefined
@@ -23,42 +35,35 @@ const loadModules = memoize((modules) => {
     // iteration order is not guarantied, so we have to push names in the same order as modules
     resultNames.push(moduleName)
   }
-
+  console.timeEnd('eval modules')
   return zipObject(resultNames, resultModules)
-})
+}
 
-self.onmessage = (event) => {
-  const pid = event.data.pid
-  const skip = event.data.skip
-  console.log(`search wtf(${event.data.args.slice(1,-1)}) == ${event.data.result} from ${Object.keys(event.data.modules)}, skip: ${event.data.skip || 0}`)
+const search = (modulesToSearch, args, result, skip = 0) => {
+  console.log(`search wtf(${args.slice(1,-1)}) == ${result} from ${Object.keys(modulesToSearch)}, skip: ${skip}`)
   console.time('  total')
   console.time('  init')
-  console.time('  eval modules')
-  const modules = loadModules(event.data.modules)
-  console.timeEnd('  eval modules')
-
-  let args, result
+  let evaledArgs, evaledResult, outcomes
   try {
-    args = eval(event.data.args)
-    result = eval(event.data.result)
+    evaledArgs = eval(args)
+    evaledResult = eval(result)
+    outcomes = wtf(modulesToSearch, builtInFunctions, snippets)(...evaledArgs)({ skip })
   } catch (e) {
-    postMessage({ action: 'error', message: e.toString(), pid })
-    return
+    postMessage({ action: 'error', message: e.toString() })
   }
   console.timeEnd('  init')
 
   console.time('  iterations')
-  const outcomes = wtf(modules, builtInFunctions, snippets)(...args)({ skip })
-  console.log(`going through ${outcomes.total} iterations`)
-  postMessage({ action: 'start', total: outcomes.total, pid })
+  console.log(`  going through ${outcomes.total} iterations`)
+  postMessage({ action: 'start', skipped: skip, total: outcomes.total })
   for (const outcome of outcomes) {
-    if (isEqual(outcome.result, result)) {
-      postMessage({ action: 'step', ...outcome, pid })
+    if (isEqual(outcome.result, evaledResult)) {
+      postMessage({ action: 'step', ...outcome })
     } else {
-      postMessage({ action: 'step', current: outcome.current, pid })
+      postMessage({ action: 'step', current: outcome.current })
     }
   }
-  postMessage({ action: 'finish', pid })
+  postMessage({ action: 'finish' })
   console.timeEnd('  iterations')
   console.timeEnd('  total')
 }

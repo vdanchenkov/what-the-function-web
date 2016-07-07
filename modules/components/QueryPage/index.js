@@ -7,20 +7,20 @@ import zipObject from 'lodash/zipObject'
 export default React.createClass({
   componentDidMount() {
     this.processor = processor(
-        (progress) => this.setState({progress}),
-        (suggestions) => this.setState({suggestions})
+        (progress) => this.setState({ progress }),
+        (suggestions) => this.setState({ suggestions })
     )
-    const modules = ['lodash', 'ramda']
+    const modules = [ 'lodash', 'ramda' ]
     Promise.all(modules.map(m => fetch(`https://npmcdn.com/${m}`).then(r => r.text())))
-        .then(result => this.setState({ modules: zipObject(modules, result)}))
+        .then(result => this.processor.setModules(zipObject(modules, result)))
   },
   getInitialState: () => ({
     suggestions: []
   }),
   updateResults() {
     if (!this.state.args || !this.state.result) return
-    const { args, result, modules } = this.state
-    this.processor.start(args, result, modules)
+    const { args, result } = this.state
+    this.processor.start(args, result)
   },
   onResultChange: function (result) {
     this.setState({ result }, this.updateResults)

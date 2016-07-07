@@ -1,73 +1,79 @@
 import Worker from 'worker?inline!./worker'
 import throttle from 'lodash/throttle'
 import { timeout } from './../../constants'
+import createPool from './createPool'
 
 export default (progressCallback, suggestionsCallback) => {
-  let worker, lastIteration = 0, totalIterations = 0, timestamp, pid, nextPid = 1
-  let searchParams
-  let suggestions
+  const pool = createPool()
+  let currentPid = 0
+
+  // For now set modules is called only once
+  const setModules = modules => pool.setModules(modules)
 
   const onProgress = throttle(progressCallback, 25)
-  const onSuggestions = suggestions => suggestionsCallback([...suggestions])
+  const onSuggestions = suggestions => suggestionsCallback([ ...suggestions ])
 
-  const getWorker = () => {
-    worker = worker || new Worker
+  const start = (args, result) => {
+    console.time('process')
+    const pid = ++currentPid
+    const suggestions = []
+    let timestamp
+    let total, last
+    let intervalId
 
-    worker.onmessage = ({ data }) => {
-      if (data.pid != pid) {
-        return
-      }
-      switch(data.action) {
+    pid === currentPid && onSuggestions(suggestions)
+
+    const workerCallback = ({ data }) => {
+      switch (data.action) {
         case 'start':
-          totalIterations = data.total
-          timestamp = new Date().getTime()
+          total = data.total
+          last = data.skipped
+          if (!intervalId) {
+            intervalId = setInterval(check, timeout)
+            timestamp = new Date().getTime()
+          }
           break
         case 'step':
           timestamp = new Date().getTime()
-          lastIteration = data.current
-          onProgress(Math.round(100 * lastIteration / totalIterations))
+          last = data.current
+          pid === currentPid && onProgress(Math.round(100 * last / total))
           if (data.display) {
             suggestions.push({ id: data.current, display: data.display, modified: data.modified })
           }
           break
         case 'finish':
-          timestamp = null
-          pid = null
-          onSuggestions(suggestions)
+        case 'error':
+          pid === currentPid && onSuggestions(suggestions)
+          clearInterval(intervalId)
+          intervalId = undefined
+          console.log('going to terminate', worker)
+          worker.terminate()
           console.timeEnd('process')
+          pool.regenerate()
           break
       }
     }
-    return worker
-  }
 
-  const terminate = () => {
-    getWorker().terminate()
-    worker = undefined
-    timestamp = null
-    pid = null
-  }
-
-  const check = () => {
-    if (timestamp && new Date().getTime() - timestamp > timeout) {
-      console.error('Stalled on iteration %s from %s. Restart.', lastIteration, totalIterations)
-      terminate()
-      getWorker().postMessage({ ...searchParams, skip: lastIteration + 1 })
+    const createWorker = () => {
+      const worker = pool.getWorker()
+      worker.onmessage = workerCallback
+      return worker
     }
+
+    let worker = createWorker()
+
+    const check = () => {
+      if (new Date().getTime() - timestamp > timeout) {
+        console.error('Stalled on iteration %s from %s. Restart.', last, total)
+        clearInterval(intervalId)
+        intervalId = undefined
+        worker.terminate()
+        worker = createWorker()
+        worker.postMessage({ args, result, skip: last + 1 })
+      }
+    }
+
+    worker.postMessage({ args, result })
   }
-  setInterval(check, timeout)
-
-  getWorker()
-
-  const start = (args, result, modules) => {
-    pid = nextPid++
-    console.time('process')
-    suggestions = []
-    onSuggestions(suggestions)
-    searchParams = { args, result, modules }
-    timestamp = null
-    getWorker().postMessage({ pid, ...searchParams })
-  }
-
-  return { start }
+  return { start, setModules }
 }
