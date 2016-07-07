@@ -39,7 +39,7 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, 'build'),
-    filename: 'bundle.js',
+    filename: 'bundle.[chunkhash].js'
   },
   plugins: prod ? [
     new webpack.DefinePlugin({
@@ -48,9 +48,9 @@ module.exports = {
       }
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: "babel",
+      name: 'babel',
       minChunks: Infinity,
-      filename: "babel.js",
+      filename: '[name].[chunkhash].js'
     }),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(true),
@@ -59,7 +59,9 @@ module.exports = {
         warnings: false
       }
     }),
-    new HtmlWebpackPlugin()
+    new HtmlWebpackPlugin({
+      title: 'What The Function'
+    })
   ] : [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin()

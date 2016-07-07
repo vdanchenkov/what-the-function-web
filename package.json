@@ -4,9 +4,10 @@
   "private": true,
   "description": "",
   "scripts": {
+    "clean": "rimraf build",
     "test": "karma start",
     "start": "babel-node server.dev.js",
-    "build": "NODE_ENV=production webpack",
+    "build": "npm run clean && NODE_ENV=production webpack",
     "deploy": "npm run build && ns build"
   },
   "author": "",
@@ -58,6 +59,7 @@
     "react-hot-loader": "^3.0.0-beta.2",
     "react-router": "2.0.0",
     "react-title-component": "1.0.1",
+    "rimraf": "2.5.3",
     "source-map-support": "0.4.0",
     "style-loader": "0.13.0",
     "url-loader": "0.5.7",

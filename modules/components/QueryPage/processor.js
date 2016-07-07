@@ -46,7 +46,6 @@ export default (progressCallback, suggestionsCallback) => {
           pid === currentPid && onSuggestions(suggestions)
           clearInterval(intervalId)
           intervalId = undefined
-          console.log('going to terminate', worker)
           worker.terminate()
           console.timeEnd('process')
           pool.regenerate()
