@@ -1,9 +1,9 @@
-.component {
+.component a {
   color: inherit;
   text-decoration: inherit;
 }
 
-a.component:hover {
+.component a:hover {
   text-decoration: underline;
   font-weight: bold;
   cursor: pointer;

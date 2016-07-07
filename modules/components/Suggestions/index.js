@@ -1,8 +1,6 @@
 import React from 'react'
 import styles from './styles.css'
 import SyntaxHighlight from './../SyntaxHighlight'
-import DocLink from './DocLink'
-import { suggestionToString } from 'what-the-function-core'
 import warningSvg from './warning.svg'
 
 const WarnModified = () => (
