@@ -11,7 +11,7 @@ export default React.createClass({
         (suggestions) => this.setState({ suggestions })
     )
     const modules = [ 'lodash', 'ramda' ]
-    Promise.all(modules.map(m => fetch(`https://npmcdn.com/${m}`).then(r => r.text())))
+    Promise.all(modules.map(m => fetch(`https://unpkg.com/${m}`).then(r => r.text())))
         .then(result => this.processor.setModules(zipObject(modules, result)))
   },
   getInitialState: () => ({
