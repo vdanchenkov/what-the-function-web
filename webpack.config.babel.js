@@ -39,7 +39,7 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, 'build'),
-    filename: 'bundle.[chunkhash].js'
+    filename: prod ? 'bundle.[chunkhash].js' : 'bundle.js'
   },
   plugins: prod ? [
     new webpack.DefinePlugin({
