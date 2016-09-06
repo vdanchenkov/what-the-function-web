@@ -36,6 +36,7 @@
     "express": "4.13.4",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.8.5",
+    "glamor": "2.14.4",
     "helmet": "1.1.0",
     "hpp": "0.2.0",
     "html-webpack-plugin": "2.19.0",

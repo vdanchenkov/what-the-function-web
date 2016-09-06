@@ -1,16 +1,18 @@
 import React from 'react'
-import styles from './styles.css'
+import { style, merge } from 'glamor'
 
 export default ({percent}) => {
-  const style = {
+  const component = style({
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    height: 2,
+    background: '#29D',
+    boxShadow: '0 0 10px #29D, 0 0 5px #29D',
+    transition: percent < 20 ? 'none' : 'all 200ms ease',
     width: percent + '%',
-  }
-  if (percent == 100) {
-    style.visibility = 'hidden'
-  }
-  // to prevent shrinking back
-  if (percent < 20) {
-    style.transition = 'none'
-  }
-  return <div className={styles.component} style={style}/>
+    visibility: percent === 100 ? 'hidden' : 'visible',
+  })
+
+  return <div {...component}/>
 }
