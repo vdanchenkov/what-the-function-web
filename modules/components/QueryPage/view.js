@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from './styles.css'
 import Query from '../Query'
 import Editor from '../Editor'
 import Manual from '../Manual'
@@ -8,10 +7,14 @@ import ProgressBar from './../ProgressBar'
 
 export default ({ onArgumentsChange, onResultChange, suggestions = [], loading, progress }) => {
   return (
-      <div className={styles.component}>
+      <div css={{ width: 400 }}>
         <Manual/>
-        <Query {...{onArgumentsChange, onResultChange}} />
-        <Suggestions {...{suggestions, loading}}/>
+        <div css={{ margin: '2rem 0' }}>
+          <Query {...{onArgumentsChange, onResultChange}} />
+        </div>
+        <div css={{ margin: '2rem 0' }}>
+          <Suggestions {...{suggestions, loading}}/>
+        </div>
         <ProgressBar percent={progress} />
       </div>
   )

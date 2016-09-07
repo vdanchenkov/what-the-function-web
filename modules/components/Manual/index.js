@@ -1,30 +1,29 @@
 import React from 'react'
-import { style } from 'glamor'
 import { timeout } from './../../constants'
 
-const component = style({
+const component = {
   fontFamily: `"Helvetica Neue", Helvetica, Arial, sans-serif`
-})
+}
 
-const header = style({
+const header = {
   fontWeight: 'bold',
   fontSize: '1.2rem',
   marginBottom: '0.2rem',
   textAlign: 'center'
-})
+}
 
-const p = style({
+const p = {
   margin: 0,
   marginBottom: '1rem'
-})
+}
 
 export default () => (
-  <div {...component}>
-    <div {...header}>
+  <div css={component}>
+    <div css={header}>
       What The Function
     </div>
     <div>
-      <p {...p}>
+      <p css={p}>
         Provide function arguments and expected result to get list of suitable functions.
       </p>
       <p>

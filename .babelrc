@@ -1,5 +1,11 @@
 {
   "presets": [ "es2015", "react", "stage-0" ],
-  "plugins": ["react-hot-loader/babel"]
+  "plugins": [
+    [
+      "transform-react-jsx",
+      { "pragma": "Glamor.createElement" }
+    ],
+    "react-hot-loader/babel"
+  ]
 }
 

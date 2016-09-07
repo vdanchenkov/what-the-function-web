@@ -42,6 +42,7 @@ module.exports = {
     filename: prod ? 'bundle.[chunkhash].js' : 'bundle.js'
   },
   plugins: prod ? [
+    new webpack.ProvidePlugin({ Glamor: 'glamor/react' }),
     new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
@@ -63,6 +64,7 @@ module.exports = {
       title: 'What The Function'
     })
   ] : [
+    new webpack.ProvidePlugin({ Glamor: 'glamor/react' }),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin()
   ],
