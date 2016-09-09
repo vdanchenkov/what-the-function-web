@@ -69,9 +69,6 @@ module.exports = {
     new HtmlWebpackPlugin()
   ],
   module: {
-    noParse: [
-      /babylon/
-    ],
     /*
       fix of:
 
