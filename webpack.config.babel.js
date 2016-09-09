@@ -30,7 +30,7 @@ module.exports = {
   devtool: prod ? 'source-map' : 'cheap-module-eval-source-map',
   entry: prod ? {
     app: './modules/client',
-    babel: ['babel-core']
+    babel: [ 'babel-core' ]
   } : [
     'react-hot-loader/patch',
     'webpack-dev-server/client?http://localhost:3000',
@@ -87,9 +87,6 @@ module.exports = {
       test: /\.js$/,
       loaders: [ 'babel' ],
       include: path.join(__dirname, 'modules')
-    }, {
-      test: /\.css$/,
-      loader: 'style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss-loader'
     }, {
       test: /\.json$/,
       loader: 'json-loader'

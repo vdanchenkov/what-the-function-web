@@ -1,15 +1,14 @@
 import React, { PropTypes } from 'react'
-import { Editor as DraftEditor, EditorState, convertFromRaw } from 'draft-js'
+import { Editor as DraftEditor, EditorState } from 'draft-js'
 import PrismDecorator from 'draft-js-prism'
 import transform from './../../transform'
-import styles from './styles.css'
-import classnames from 'classnames'
+import { select } from 'glamor'
 
 export default class Editor extends React.Component {
   constructor(props) {
     super(props)
     const decorator = new PrismDecorator({ defaultSyntax: 'javascript', filter: () => true })
-    this.state = { editorState: EditorState.createEmpty(decorator) }
+    this.state = { editorState: EditorState.createEmpty(decorator), isError: false }
 
     this.onCodeChange = (editorState) => {
       let text = editorState.getCurrentContent().getPlainText()
@@ -35,7 +34,7 @@ export default class Editor extends React.Component {
   render() {
     const { editorState } = this.state
     return (
-      <div className={classnames(styles.component, { [styles.error]: this.state.isError })}>
+      <div css={[ css, this.state.isError && error ]}>
         <DraftEditor
           editorState={editorState}
           onChange={this.onCodeChange}
@@ -49,3 +48,18 @@ Editor.propTypes = {
   onChange: PropTypes.func,
   wrap: PropTypes.func
 }
+
+const error = select(' .public-DraftStyleDefault-block > *', {
+  background: 'rgba(255, 0, 0, 0.3)'
+})
+
+const css = [
+  select(' .public-DraftEditorPlaceholder-root', {
+    opacity: '0.2',
+    position: 'absolute',
+    zIndex: '-1'
+  }),
+  select(' .public-DraftEditorPlaceholder-hasFocus', {
+    display: 'none'
+  })
+]
