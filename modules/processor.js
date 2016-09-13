@@ -1,6 +1,6 @@
 import Worker from 'worker?inline!./worker'
 import throttle from 'lodash/throttle'
-import { timeout } from './../../constants'
+import { timeout } from './constants'
 import createPool from './createPool'
 
 export default (progressCallback, suggestionsCallback) => {

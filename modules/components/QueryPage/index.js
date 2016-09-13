@@ -1,7 +1,6 @@
 import React from 'react'
 import View from './view'
-import processor from './processor'
-import throttle from 'lodash/throttle'
+import processor from './../../processor'
 import zipObject from 'lodash/zipObject'
 
 export default React.createClass({
@@ -18,9 +17,9 @@ export default React.createClass({
     suggestions: []
   }),
   updateResults() {
-    if (!this.state.args || !this.state.result) return
-    const { args, result } = this.state
-    this.processor.start(args, result)
+    if (this.state.args && this.state.result) {
+      this.processor.start(this.state.args, this.state.result)
+    }
   },
   onResultChange: function (result) {
     this.setState({ result }, this.updateResults)
