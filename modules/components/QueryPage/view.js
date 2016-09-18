@@ -3,7 +3,7 @@ import Query from '../Query'
 import Suggestions from '../Suggestions'
 import ProgressBar from './../ProgressBar'
 
-export default ({ onArgumentsChange, onResultChange, suggestions = [], loading, progress }) => {
+const QueryPage_View = ({ onArgumentsChange, onResultChange, suggestions = [], loading, progress }) => {
   return (
       <div>
         <div css={{ margin: '2rem 0' }}>
@@ -16,3 +16,5 @@ export default ({ onArgumentsChange, onResultChange, suggestions = [], loading, 
       </div>
   )
 }
+
+export default QueryPage_View

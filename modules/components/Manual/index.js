@@ -2,7 +2,7 @@ import React from 'react'
 import { timeout } from './../../constants'
 import { select } from 'glamor'
 
-export default () => (
+const Manual = () => (
   <div css={component}>
     <div css={header}>
       What The Function
@@ -26,9 +26,11 @@ export default () => (
   </div>
 )
 
+export default Manual
+
 const component = [
   { fontFamily: `"Helvetica Neue", Helvetica, Arial, sans-serif` },
-  select(' p', { margin: '1rem 0' }),
+  select(' p', { margin: '1rem 0', label: 'test' }),
   select(' code', { fontStyle: 'italic', fontSize: 'larger' }),
   select(' a', { textDecoration: 'none' })
 ]

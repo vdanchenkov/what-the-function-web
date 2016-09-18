@@ -4,8 +4,18 @@
     [
       "transform-react-jsx",
       { "pragma": "Glamor.createElement" }
-    ],
-    "react-hot-loader/babel"
-  ]
+    ]
+  ],
+  "env": {
+    "development": {
+      "plugins": [
+        [
+          "transform-react-jsx",
+          { "pragma": "Glamor._NIL=Glamor.createElement" }
+        ],
+        "react-hot-loader/babel"
+      ]
+    }
+  }
 }
 

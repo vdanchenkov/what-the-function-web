@@ -2,7 +2,16 @@ import 'babel-polyfill'
 import { AppContainer } from 'react-hot-loader'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './components/App'
+import { plugins } from 'glamor'
+
+if (process.env.NODE_ENV == 'development') {
+  const extractToComment = require('glamor-plugin-extract-to-comment').default
+  const detectComponent = require('glamor-plugin-detect-component').default
+
+  plugins.add(extractToComment('GlamorComponent', true))
+  plugins.add(detectComponent())
+}
+const App = require('./components/App').default
 
 const rootEl = document.createElement('div')
 document.body.appendChild(rootEl)

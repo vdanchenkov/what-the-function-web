@@ -1,11 +1,12 @@
 import React from 'react'
 import Editor from '../Editor'
+import ModuleSelector from '../ModuleSelector'
 
-export default ({ onArgumentsChange, onResultChange }) => (
+const Query = ({ onArgumentsChange, onResultChange }) => (
   <div css={component}>
+    <ModuleSelector />
     <div>
-      wtf({'{ lodash, ramda, Object }'})(
-      <a css={sample}>sample</a>
+      wtf(
     </div>
     <div css={editor}>
       <Editor wrap={s => `[${s}]`} onChange={onArgumentsChange}/>
@@ -20,17 +21,21 @@ export default ({ onArgumentsChange, onResultChange }) => (
       )
     </div>
   </div>
-)
+) 
+
+export default Query
 
 const component = {
   fontSize: '0.85rem',
   fontFamily: `Consolas, "Liberation Mono", Menlo, Courier, monospace`,
   color: '#888',
-  lineHeight: 1.4
+  lineHeight: 1.4,
+  label: 'Query'
 }
 
 const editor = {
-  paddingLeft: '1rem'
+  paddingLeft: '1rem',
+  label: 'TODO'
 }
 
 const sample = {

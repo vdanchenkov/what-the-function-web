@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default ({ percent }) => {
+const ProgressBar = ({ percent }) => {
   const css = {
     position: 'fixed',
     top: 0,
@@ -14,3 +14,5 @@ export default ({ percent }) => {
 
   return <div css={css} style={{ width: percent + '%' }}/>
 }
+
+export default ProgressBar

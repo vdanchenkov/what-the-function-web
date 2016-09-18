@@ -1,25 +1,3 @@
-//import * as config from 'react-project/webpack'
-//import merge from 'lodash/object/merge'
-//
-//export const ClientConfig = merge({}, config.ClientConfig, {
-//  node: {
-//    fs: 'empty',
-//    module: 'empty',
-//    net: 'empty'
-//  },
-//  module: {
-//    noParse: [
-//      /babylon/
-//    ]
-//  },
-//  entry: {
-//    _vendor: [ 'lodash', 'babel-core', 'react-codemirror' ]
-//  }
-//})
-//
-//export const ServerConfig = config.ServerConfig
-
-
 import path from 'path'
 import webpack from 'webpack'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
@@ -65,6 +43,11 @@ module.exports = {
     })
   ] : [
     new webpack.ProvidePlugin({ Glamor: 'glamor/react' }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('development')
+      }
+    }),
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin()
   ],

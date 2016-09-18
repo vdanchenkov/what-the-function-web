@@ -3,7 +3,7 @@ import View from './view'
 import processor from './../../processor'
 import zipObject from 'lodash/zipObject'
 
-export default React.createClass({
+const QueryPage = React.createClass({
   componentDidMount() {
     this.processor = processor(
         (progress) => this.setState({ progress }),
@@ -39,3 +39,5 @@ export default React.createClass({
     )
   }
 })
+
+export default QueryPage

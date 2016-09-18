@@ -36,6 +36,8 @@
     "file-loader": "0.8.5",
     "fsevents": "1.0.14",
     "glamor": "2.15.3",
+    "glamor-plugin-detect-component": "^0.2.0",
+    "glamor-plugin-extract-to-comment": "^1.0.1",
     "helmet": "1.1.0",
     "hpp": "0.2.0",
     "html-webpack-plugin": "2.19.0",
