@@ -29,7 +29,6 @@ const Manual = () => (
 export default Manual
 
 const component = [
-  { fontFamily: `"Helvetica Neue", Helvetica, Arial, sans-serif` },
   select(' p', { margin: '0.75rem 0' }),
   select(' code', {
     fontFamily: `Consolas, "Liberation Mono", Menlo, Courier, monospace`,

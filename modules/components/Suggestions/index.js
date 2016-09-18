@@ -22,7 +22,7 @@ export default ({ suggestions }) => (
 )
 
 const component = {
-  fontSize: '0.85rem',
+  fontSize: '0.9rem',
   fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
   lineHeight: '1.4'
 }

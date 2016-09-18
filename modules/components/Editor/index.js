@@ -54,6 +54,7 @@ const error = select(' .public-DraftStyleDefault-block > *', {
 })
 
 const css = [
+  { minWidth: '1.75em' },
   select(' .public-DraftEditorPlaceholder-root', {
     opacity: '0.2',
     position: 'absolute',
